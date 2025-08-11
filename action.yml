@@ -1,5 +1,5 @@
-name: Shorebird Release
-description: Create a new release using the Shorebird CLI
+name: Shorebird Release (private)
+description: Create a new release using the Shorebird CLI (private)
 
 branding:
   icon: package
