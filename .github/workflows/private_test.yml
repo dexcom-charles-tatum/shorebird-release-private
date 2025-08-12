@@ -19,6 +19,9 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: dexcom-charles-tatum/setup-shorebird-private@v1
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: dexcom-charles-tatum/shorebird-release-private@v0
 
       # Runs a single command using the runners shell
