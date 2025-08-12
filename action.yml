@@ -1,46 +1,37 @@
-name: Shorebird Release (private)
+name: Shorebird Release, Development (private)
+uses: dexcom-charles-tatum/shorebird-release-private@v1
+with:
+    flutter-version: 3.32.6
+    platform: android
+    working-directory: .
+    args: "--flavor=development --artifact=apk"
 description: Create a new release using the Shorebird CLI (private)
 
-branding:
-  icon: package
-  color: green
-
 inputs:
-  args:
-    description: The arguments to pass to the Shorebird release command
-    required: false
-    default: ""
   flutter-version:
-    description: The version of Flutter to use for the release. Use "latest" to always target the latest stable version.
-    required: true    
+    description: Flutter version to use
+    required: true
   platform:
-    description: The platform for which to create a release (e.g. android, ios)
+    description: Platform to release for (e.g., android, ios)
     required: true
   working-directory:
-    description: The working directory in which to run Shorebird
+    description: Directory to run the release command in
+    required: true
+  args:
+    description: Additional arguments to pass to shorebird release
     required: false
-    default: .
 
 outputs:
   release-version:
-    description: The version of the release that was created.
-    value: ${{ steps.shorebird-release.outputs.release-version }}
+    description: The version of the release created
 
 runs:
-  using: composite
+  using: "composite"
   steps:
-    - name: 🐦 Shorebird Release
-      shell: bash
-      id: shorebird-release
-      working-directory: ${{ inputs.working-directory }}
+    - name: Run Shorebird Release
       run: |
-        shorebird release ${{ inputs.platform }} --flutter-version ${{ inputs.flutter-version }} ${{ inputs.args }} | tee output.log
-        GREP_MATCH=$(grep -Ei "Published Release (.*)" output.log)
-        if [[ $GREP_MATCH ]]; then
-          # Strip the non-version-number characters from the line
-          RELEASE_VERSION=$(echo $GREP_MATCH | sed -E 's/^.+ Published Release (.*)\!$/\1/')
-          echo "release-version=$(echo $RELEASE_VERSION)" >> $GITHUB_OUTPUT
-        else
-          echo "Failed to create release"
-          exit 1
-        fi
+        cd ${{ inputs.working-directory }}
+        shorebird release ${{ inputs.platform }} \
+          --flutter-version=${{ inputs.flutter-version }} \
+          ${{ inputs.args }}
+      shell: bash
